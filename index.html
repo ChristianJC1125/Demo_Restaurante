@@ -1746,27 +1746,7 @@
                 <button type="submit" class="login-btn">Ingresar al sistema</button>
             </form>
 
-            <div class="credenciales-toggle">
-                <button onclick="toggleCredenciales()">📋 Mostrar credenciales de prueba</button>
-            </div>
-            <div class="login-credenciales" id="credencialesBox">
-                <h4>📋 Credenciales de acceso</h4>
-                <div class="credencial-item">
-                    <span>👑 <span class="rol-badge admin">Administrador</span></span>
-                    <span><strong>admin</strong> / <strong>admin123</strong></span>
-                </div>
-                <div class="credencial-item">
-                    <span>💰 <span class="rol-badge cajero">Cajero</span></span>
-                    <span><strong>cajero</strong> / <strong>caja2024</strong></span>
-                </div>
-                <div class="credencial-item">
-                    <span>🍽️ <span class="rol-badge mesero">Mesero</span></span>
-                    <span><strong>mesero</strong> / <strong>mesa2024</strong></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
+          
     <!-- =========================================================
          APP
     ========================================================= -->
@@ -2198,17 +2178,17 @@
                 icono: '💰',
                 badge: 'cajero',
                 permisos: {
-                    verDashboard: true,
+                    verDashboard: false,
                     verMesas: true,
-                    verMenu: true,
+                    verMenu: false,
                     verOrdenes: true,
-                    verReportes: false,
+                    verReportes: true,
                     verConfiguracion: false,
                     verAnalytics: false,
                     tomarPedidos: true,
                     cobrar: true,
                     generarComandas: true,
-                    reiniciarMesas: true,
+                    reiniciarMesas: false,
                     verKPICompletos: false
                 }
             },
@@ -2220,14 +2200,14 @@
                     verDashboard: true,
                     verMesas: true,
                     verMenu: true,
-                    verOrdenes: false,
-                    verReportes: false,
+                    verOrdenes: true,
+                    verReportes: true,
                     verConfiguracion: false,
                     verAnalytics: false,
                     tomarPedidos: true,
                     cobrar: false,
                     generarComandas: true,
-                    reiniciarMesas: false,
+                    reiniciarMesas: true,
                     verKPICompletos: false
                 }
             }
