@@ -10,9 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* =========================================================
-           VARIABLES
-        ========================================================= */
         :root {
             --gold: #b67a45;
             --gold-light: #d79a67;
@@ -74,9 +71,6 @@
         ::-webkit-scrollbar-thumb { background: #caa889; border-radius: 20px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
 
-        /* =========================================================
-           LOGIN
-        ========================================================= */
         .login-screen {
             position: fixed; inset: 0;
             display: flex; justify-content: center; align-items: center;
@@ -176,9 +170,6 @@
 
         .app { min-height: 100vh; display: grid; grid-template-columns: 250px 1fr; }
 
-        /* =========================================================
-           SIDEBAR
-        ========================================================= */
         .sidebar {
             position: fixed; left: 0; top: 0; bottom: 0; width: 250px;
             padding: 25px 16px;
@@ -1023,9 +1014,6 @@
         }
         .ordenes-empty span { font-size: 30px; display: block; margin-bottom: 8px; }
 
-        /* =========================================================
-           CONEXIÓN FIREBASE
-        ========================================================= */
         .connection-status {
             position: fixed;
             bottom: 20px;
@@ -1118,9 +1106,7 @@
 </head>
 <body>
 
-    <!-- =========================================================
-         LOGIN
-    ========================================================= -->
+    <!-- LOGIN -->
     <div class="login-screen" id="loginScreen">
         <div class="login-background"></div>
         <div class="login-card">
@@ -1133,11 +1119,7 @@
                 <h2>Bienvenido</h2>
                 <p>Ingresa con tus credenciales</p>
             </div>
-
-            <div class="login-error" id="loginError">
-                ⚠️ Usuario o contraseña incorrectos
-            </div>
-
+            <div class="login-error" id="loginError">⚠️ Usuario o contraseña incorrectos</div>
             <form id="loginForm">
                 <div class="form-group">
                     <label for="username">Usuario</label>
@@ -1162,11 +1144,8 @@
         </div>
     </div>
 
-    <!-- =========================================================
-         APP
-    ========================================================= -->
+    <!-- APP -->
     <div class="app">
-
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
         <aside class="sidebar" id="sidebar">
@@ -1179,7 +1158,6 @@
             </div>
 
             <div class="nav-title">Principal</div>
-
             <button class="nav-item active" data-seccion="seccion-dashboard" id="navDashboard">
                 <span class="nav-icon">⌂</span> Dashboard
             </button>
@@ -1197,7 +1175,6 @@
             </button>
 
             <div class="nav-title">Gestión</div>
-
             <button class="nav-item" id="navReportes" onclick="generarReporteCompleto()">
                 <span class="nav-icon">▥</span> Reportes
             </button>
@@ -1220,7 +1197,6 @@
         </aside>
 
         <main class="main">
-
             <div class="topbar">
                 <div style="display:flex;align-items:center;gap:12px;">
                     <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
@@ -1237,7 +1213,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN DASHBOARD -->
+            <!-- DASHBOARD -->
             <div id="seccion-dashboard" class="seccion active">
                 <div class="kpi-grid" id="kpiGrid">
                     <div class="kpi-card">
@@ -1389,7 +1365,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN MESAS -->
+            <!-- MESAS -->
             <div id="seccion-mesas" class="seccion">
                 <div class="panel" style="padding:20px;">
                     <h2 style="font-family:'Playfair Display',serif; margin-bottom:15px;">Gestión de Mesas</h2>
@@ -1408,7 +1384,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN MENÚ -->
+            <!-- MENÚ -->
             <div id="seccion-menu" class="seccion">
                 <div class="panel" style="padding:20px;">
                     <div class="panel-header" style="padding:0 0 18px 0;">
@@ -1453,7 +1429,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN COCINA -->
+            <!-- COCINA -->
             <div id="seccion-cocina" class="seccion">
                 <div class="panel" style="padding:20px;">
                     <div class="panel-header" style="padding:0 0 18px 0; flex-wrap:wrap; gap:10px; border-bottom:none;">
@@ -1471,7 +1447,7 @@
                     </div>
 
                     <div id="cocinaResumen" style="display:flex; gap:18px; flex-wrap:wrap; padding:12px 0 18px; font-size:11px; color:var(--text-muted); border-bottom:1px solid var(--border); margin-bottom:18px;">
-                        <span>📋 Total en memoria: <strong id="cocinaTotalTickets" style="color:var(--gold-dark);">0</strong></span>
+                        <span>📋 Total: <strong id="cocinaTotalTickets" style="color:var(--gold-dark);">0</strong></span>
                         <span>🕐 Pendientes: <strong id="cocinaResumenPendiente" style="color:var(--rose);">0</strong></span>
                         <span>🔥 Preparando: <strong id="cocinaResumenPreparando" style="color:var(--gold-dark);">0</strong></span>
                         <span>✅ Listos: <strong id="cocinaResumenListo" style="color:var(--green);">0</strong></span>
@@ -1511,15 +1487,13 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN ÓRDENES -->
+            <!-- ÓRDENES -->
             <div id="seccion-ordenes" class="seccion">
                 <div class="panel" style="padding:20px; margin-bottom:18px;">
                     <div class="panel-header" style="padding:0 0 15px 0; border-bottom:none;">
                         <div>
                             <h2 style="font-family:'Playfair Display',serif;">◈ Órdenes Activas</h2>
-                            <p style="color:var(--text-muted);font-size:11px;margin-top:4px;">
-                                Mesas con pedidos pendientes de cobro
-                            </p>
+                            <p style="color:var(--text-muted);font-size:11px;margin-top:4px;">Mesas con pedidos pendientes de cobro</p>
                         </div>
                         <span id="ordenesActivasCount">0 mesas</span>
                     </div>
@@ -1530,9 +1504,7 @@
                     <div class="panel-header" style="padding:0 0 15px 0; border-bottom:none;">
                         <div>
                             <h2 style="font-family:'Playfair Display',serif;">🧾 Historial de Órdenes Cobradas</h2>
-                            <p style="color:var(--text-muted);font-size:11px;margin-top:4px;">
-                                Registro de ventas finalizadas
-                            </p>
+                            <p style="color:var(--text-muted);font-size:11px;margin-top:4px;">Registro de ventas finalizadas</p>
                         </div>
                     </div>
                     <div id="historialOrdenes">
@@ -1541,7 +1513,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN CONFIGURACIÓN -->
+            <!-- CONFIGURACIÓN -->
             <div id="seccion-configuracion" class="seccion">
                 <div class="panel" style="padding:20px;">
                     <h2 style="font-family:'Playfair Display',serif; margin-bottom:15px;">Configuración</h2>
@@ -1626,40 +1598,50 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- Indicador de conexión -->
     <div class="connection-status" id="connectionStatus">
         <span class="dot"></span>
         <span id="connectionText">Conectando a Firebase...</span>
     </div>
 
-    <!-- =========================================================
-         FIREBASE SDK (compat para simplicidad)
-    ========================================================= -->
+    <!-- FIREBASE SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
 
     <script>
         /* =========================================================
-           🔥 CONFIGURACIÓN DE FIREBASE
-           👇 REEMPLAZA ESTE OBJETO CON EL TUYO
-           (Firebase Console → Configuración del proyecto → Tus apps)
+           CONFIGURACIÓN DE FIREBASE (LA TUYA)
         ========================================================= */
         const firebaseConfig = {
-  apiKey: "AIzaSyBrK5lGFpOu8Aa8qxw87hjVw89pOTZagnA",
-  authDomain: "demococina-40f62.firebaseapp.com",
-  databaseURL: "https://demococina-40f62-default-rtdb.firebaseio.com",
-  projectId: "demococina-40f62",
-  storageBucket: "demococina-40f62.firebasestorage.app",
-  messagingSenderId: "749299440339",
-  appId: "1:749299440339:web:b7c1d02777dff57317d226",
-  measurementId: "G-SMJKPJZ2L2"
+            apiKey: "AIzaSyBrK5lGFpOu8Aa8qxw87hjVw89pOTZagnA",
+            authDomain: "demococina-40f62.firebaseapp.com",
+            databaseURL: "https://demococina-40f62-default-rtdb.firebaseio.com",
+            projectId: "demococina-40f62",
+            storageBucket: "demococina-40f62.firebasestorage.app",
+            messagingSenderId: "749299440339",
+            appId: "1:749299440339:web:b7c1d02777dff57317d226",
+            measurementId: "G-SMJKPJZ2L2"
         };
 
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        // Verificar que Firebase SDK está disponible
+        if (typeof firebase === 'undefined') {
+            console.error('❌ Firebase SDK no cargó. Verifica tu conexión a internet.');
+            alert('Error: No se pudo cargar Firebase. Verifica tu conexión a internet.');
+        }
 
-        /* REFERENCIAS A FIREBASE */
+        // Inicializar Firebase
+        let db;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.database();
+            console.log('✅ Firebase inicializado correctamente');
+            console.log('📡 Database URL:', firebaseConfig.databaseURL);
+        } catch (error) {
+            console.error('❌ Error al inicializar Firebase:', error);
+        }
+
+        /* REFERENCIAS */
         const refComandas = db.ref('comandas');
         const refMesas = db.ref('mesas');
         const refEstadisticas = db.ref('estadisticas');
@@ -1667,12 +1649,11 @@
         const refConfig = db.ref('configuracion');
 
         /* =========================================================
-           CONFIGURACIÓN
+           CONFIGURACIÓN GENERAL
         ========================================================= */
         const IVA_DEFAULT = 0.16;
         let IVA_ACTUAL = IVA_DEFAULT;
         const MAX_ENTREGADAS = 20;
-
         const NOMBRE_RESTAURANTE = "EL SAZÓN DE LAS AMIGAS";
         const nombresMeses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
         const nombresDias = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
@@ -1744,7 +1725,6 @@
             {id:18,nombre:"Flan casero",precio:70,categoria:"postres"}
         ];
 
-        /* ESTADO LOCAL */
         let menuData = [...MENU_DEFAULT];
         let mesaActual = null;
         let categoriaActiva = "todos";
@@ -1764,24 +1744,30 @@
         for (let i = 1; i <= 10; i++) mesas[i] = { pedido: [], estado: "disponible", horaApertura: null };
 
         /* =========================================================
-           🔥 SINCRONIZACIÓN CON FIREBASE
+           SINCRONIZACIÓN CON FIREBASE
         ========================================================= */
-
-        // Escuchar comandas en tiempo real
         refComandas.on('value', (snapshot) => {
             const data = snapshot.val() || {};
             cocinaPedidos = Object.entries(data).map(([id, ticket]) => ({ id, ...ticket }));
+            console.log('📋 Comandas actualizadas:', cocinaPedidos.length);
             renderizarCocina();
             const liveStatus = document.getElementById('cocinaLiveStatus');
             if (liveStatus) liveStatus.textContent = `Sincronizado · ${cocinaPedidos.length} comanda(s)`;
+        }, (error) => {
+            console.error('❌ Error al leer comandas:', error);
         });
 
-        // Escuchar mesas en tiempo real
         refMesas.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 for (let i = 1; i <= 10; i++) {
-                    if (data[i]) mesas[i] = data[i];
+                    if (data[i]) {
+                        mesas[i] = {
+                            pedido: data[i].pedido || [],
+                            estado: data[i].estado || "disponible",
+                            horaApertura: data[i].horaApertura || null
+                        };
+                    }
                 }
                 renderizarMesas();
                 renderizarMesas2();
@@ -1789,12 +1775,12 @@
                 actualizarInterfazMesa();
                 mostrarPedido();
             } else {
-                // Inicializar si no existe
                 refMesas.set(mesas);
             }
+        }, (error) => {
+            console.error('❌ Error al leer mesas:', error);
         });
 
-        // Escuchar estadísticas
         refEstadisticas.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -1804,7 +1790,6 @@
             }
         });
 
-        // Escuchar menú
         refMenu.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data && Array.isArray(data) && data.length > 0) {
@@ -1818,7 +1803,6 @@
             renderizarCategorias2();
         });
 
-        // Escuchar configuración
         refConfig.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -1830,7 +1814,6 @@
             }
         });
 
-        // Estado de conexión
         db.ref('.info/connected').on('value', (snap) => {
             const conn = document.getElementById('connectionStatus');
             const text = document.getElementById('connectionText');
@@ -1838,10 +1821,12 @@
                 conn.classList.add('online');
                 conn.classList.remove('offline');
                 text.textContent = 'En línea · Sincronizado';
+                console.log('✅ Conectado a Firebase');
             } else {
                 conn.classList.add('offline');
                 conn.classList.remove('online');
                 text.textContent = 'Sin conexión';
+                console.warn('⚠️ Sin conexión a Firebase');
             }
         });
 
@@ -1849,7 +1834,6 @@
            GUARDAR EN FIREBASE
         ========================================================= */
         function guardarMesas() {
-            // Limpiar estructura para evitar problemas con arrays vacíos
             const limpias = {};
             for (let i = 1; i <= 10; i++) {
                 limpias[i] = {
@@ -1858,20 +1842,17 @@
                     horaApertura: mesas[i].horaApertura || null
                 };
             }
-            refMesas.set(limpias);
+            refMesas.set(limpias).catch(err => console.error('Error guardando mesas:', err));
         }
 
         function guardarEstadisticas() {
-            refEstadisticas.set(estadisticas);
+            refEstadisticas.set(estadisticas).catch(err => console.error('Error guardando estadísticas:', err));
         }
 
-        function guardarCocina() {
-            // Se guarda directamente en Firebase, no requiere acción adicional
-            // porque ya se actualizó vía refComandas cuando se hace push/update
-        }
+        function guardarCocina() { /* Firebase lo maneja en tiempo real */ }
 
         function guardarMenuLocal() {
-            refMenu.set(menuData);
+            refMenu.set(menuData).catch(err => console.error('Error guardando menú:', err));
         }
 
         /* =========================================================
@@ -2766,7 +2747,6 @@
             `;
         }
 
-        /* ADMINISTRACIÓN DEL MENÚ */
         function limpiarFormularioPlatillo() {
             ["adminMenuNombre","adminMenuPrecio","adminMenuCategoria","adminMenuId"].forEach(id => {
                 const el = document.getElementById(id);
@@ -2820,9 +2800,7 @@
             mostrarToast("Platillo eliminado","success");
         }
 
-        /* =========================================================
-           COCINA - AHORA USA FIREBASE
-        ========================================================= */
+        /* COCINA */
         function enviarPedidoACocina() {
             if (!tienePermiso('generarComandas')) {
                 mostrarToast("No tienes permiso para enviar pedidos a cocina","error");
@@ -2846,8 +2824,12 @@
                 items: items.map(({cantidadEnviada,...item}) => ({...item}))
             };
 
-            // 🔥 Guardar en Firebase
-            refComandas.push(ticket);
+            refComandas.push(ticket).then(() => {
+                console.log('✅ Comanda enviada a Firebase:', ticket);
+            }).catch(err => {
+                console.error('❌ Error enviando comanda:', err);
+                mostrarToast('Error al enviar: ' + err.message, 'error');
+            });
 
             mesa.pedido.forEach(item => item.cantidadEnviada = item.cantidad || 0);
             guardarMesas();
@@ -2864,7 +2846,6 @@
             if (estado === "listo") actualizacion.listoEn = new Date().toISOString();
             if (estado === "entregado") actualizacion.entregadoEn = new Date().toISOString();
 
-            // 🔥 Actualizar en Firebase
             refComandas.child(id).update(actualizacion).then(() => {
                 const mensajes = {
                     preparando: "🔥 Comanda en preparación",
@@ -2977,7 +2958,6 @@
             imprimirVentana("El Sazón de las Amigas - Cocina", contenido);
         }
 
-        /* COMANDA */
         function generarComanda() {
             if (!tienePermiso('generarComandas')) {
                 mostrarToast('No tienes permiso para generar comandas', 'error');
@@ -3017,7 +2997,6 @@
             imprimirVentana("ALMA - Comanda", contenido);
         }
 
-        /* REPORTE */
         function generarReporteCompleto() {
             if (!tienePermiso('verReportes')) {
                 mostrarToast('No tienes permiso para ver reportes', 'error');
@@ -3091,7 +3070,6 @@
             imprimirVentana("ALMA - Reporte de ventas", contenido);
         }
 
-        /* IMPRESIÓN */
         function imprimirVentana(titulo, contenido) {
             const ventana = window.open("", "_blank", "width=900,height=700");
             if (!ventana) {
@@ -3124,7 +3102,6 @@
             setTimeout(() => ventana.print(), 400);
         }
 
-        /* REINICIAR MESAS */
         function resetAllTables() {
             if (!tienePermiso('reiniciarMesas')) {
                 mostrarToast('No tienes permiso para reiniciar mesas', 'error');
@@ -3144,7 +3121,6 @@
             mostrarToast("Todas las mesas fueron reiniciadas", "success");
         }
 
-        /* CONFIGURACIÓN */
         function cargarConfiguracion() {
             if (!tienePermiso('verConfiguracion')) {
                 const seccion = document.getElementById('seccion-configuracion');
@@ -3171,7 +3147,6 @@
             const nombre = document.getElementById("configNombre").value.trim();
             const iva = parseFloat(document.getElementById("configIVA").value);
             if (nombre && iva > 0 && iva <= 100) {
-                // 🔥 Guardar en Firebase
                 refConfig.set({ nombre, iva: iva / 100 });
                 mostrarToast(`Configuración guardada · IVA ${iva}%`, "success");
             } else {
@@ -3193,6 +3168,7 @@
 
         /* INICIALIZACIÓN */
         document.addEventListener("DOMContentLoaded", function() {
+            console.log('🚀 Iniciando sistema...');
             checkSavedSession();
             renderizarMesas();
             renderizarMesas2();
@@ -3211,6 +3187,14 @@
             if (!usuarioActual) {
                 document.getElementById("loginScreen").classList.remove("hidden");
             }
+
+            // Diagnóstico automático
+            setTimeout(() => {
+                console.log('🔍 DIAGNÓSTICO:');
+                console.log('   - Usuario:', usuarioActual ? usuarioActual.nombre : 'No logueado');
+                console.log('   - Firebase conectado:', document.getElementById('connectionText')?.textContent);
+                console.log('   - Comandas en memoria:', cocinaPedidos.length);
+            }, 2000);
         });
     </script>
 
