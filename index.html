@@ -268,7 +268,7 @@
             font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
         }
         .badge-role.admin { background: rgba(182,122,69,.20); color: var(--gold-dark); }
-        .badge-role.cajero { background: rgba(83,109,69,.15); color: var(--green); }
+        .badge-role.cajero { background: rgba(216,142,135,.20); color: var(--rose); }
         .badge-role.mesero { background: rgba(102,132,162,.18); color: #4a6a8a; }
         .badge-role.cocina { background: rgba(83,109,69,.15); color: var(--green); }
 
@@ -1201,7 +1201,7 @@
             </form>
             <div style="margin-top:18px;padding:12px;border:1px dashed rgba(89,70,45,.2);border-radius:12px;background:rgba(255,255,255,.45);font-size:10px;color:#777;">
                 <strong style="color:#536d45;">Usuarios de demo</strong><br>
-                admin / · mesero /  · cocina / 
+                admin /  · cajero / · mesero / · cocina / 
             </div>
         </div>
     </div>
@@ -1516,7 +1516,6 @@
                         </div>
                     </div>
 
-                    <!-- Resumen de tickets -->
                     <div id="cocinaResumen" style="display:flex; gap:18px; flex-wrap:wrap; padding:12px 0 18px; font-size:11px; color:var(--text-muted); border-bottom:1px solid var(--border); margin-bottom:18px;">
                         <span>📋 Total en memoria: <strong id="cocinaTotalTickets" style="color:var(--gold-dark);">0</strong></span>
                         <span>🕐 Pendientes: <strong id="cocinaResumenPendiente" style="color:var(--rose);">0</strong></span>
@@ -1688,6 +1687,7 @@
         /* USUARIOS */
         const USUARIOS = {
             admin: { password: 'admin123', rol: 'admin', nombre: 'Administradora', icono: '👑' },
+            cajero: { password: 'caja2024', rol: 'cajero', nombre: 'Cajero', icono: '💰' },
             mesero: { password: 'mesa2024', rol: 'mesero', nombre: 'Mesero', icono: '🍽️' },
             cocina: { password: 'cocina2024', rol: 'cocina', nombre: 'Cocina', icono: '👩‍🍳' }
         };
@@ -1701,6 +1701,15 @@
                     verCocina:true, verReportes:true, verConfiguracion:true, verAnalytics:true,
                     tomarPedidos:true, cobrar:true, generarComandas:true, reiniciarMesas:true,
                     verKPICompletos:true, administrarMenu:true
+                }
+            },
+            cajero: {
+                nombre: 'Cajero', icono: '💰', badge: 'cajero',
+                permisos: {
+                    verDashboard:false, verMesas:false, verMenu:false, verOrdenes:true,
+                    verCocina:false, verReportes:true, verConfiguracion:false, verAnalytics:true,
+                    tomarPedidos:false, cobrar:true, generarComandas:false, reiniciarMesas:false,
+                    verKPICompletos:false, administrarMenu:false
                 }
             },
             mesero: {
@@ -1836,6 +1845,7 @@
             cargarUsuario();
             aplicarPermisosYVista();
             if (userData.rol === 'cocina') cambiarSeccion('seccion-cocina');
+            else if (userData.rol === 'cajero') cambiarSeccion('seccion-ordenes');
             document.getElementById("loginScreen").classList.add("hidden");
             mostrarToast(`✅ Bienvenido, ${userData.nombre} (${userData.icono})`, "success");
             document.getElementById("password").value = "";
@@ -1861,6 +1871,7 @@
                         cargarUsuario();
                         aplicarPermisosYVista();
                         if (usuarioActual.rol === 'cocina') cambiarSeccion('seccion-cocina');
+                        else if (usuarioActual.rol === 'cajero') cambiarSeccion('seccion-ordenes');
                         document.getElementById("loginScreen").classList.add("hidden");
                         return;
                     }
@@ -1923,6 +1934,9 @@
             } else if (rol === 'cocina') {
                 if (orderPanel) orderPanel.style.display = 'none';
                 if (analyticsPanel) analyticsPanel.style.display = 'none';
+            } else if (rol === 'cajero') {
+                if (orderPanel) orderPanel.style.display = 'none';
+                if (analyticsPanel) analyticsPanel.style.display = 'none';
             } else {
                 if (orderPanel) orderPanel.style.display = 'block';
                 if (analyticsPanel) analyticsPanel.style.display = 'block';
@@ -1940,6 +1954,7 @@
 
             const titulos = {
                 admin: 'Panel de Control · Administración',
+                cajero: 'Caja · Cobros y Reportes',
                 mesero: 'Panel de Control · Servicio',
                 cocina: 'Cocina · Comandas en vivo'
             };
@@ -1960,7 +1975,7 @@
                 if (navItem) navItem.classList.toggle('disabled', !permiso);
                 const seccion = document.getElementById(id);
                 if (seccion && seccion.classList.contains('active') && !permiso) {
-                    cambiarSeccion(rol === 'cocina' ? 'seccion-cocina' : 'seccion-dashboard');
+                    cambiarSeccion(rol === 'cocina' ? 'seccion-cocina' : (rol === 'cajero' ? 'seccion-ordenes' : 'seccion-dashboard'));
                 }
             });
 
@@ -2578,6 +2593,9 @@
                 return;
             }
 
+            const puedeCobrar = tienePermiso('cobrar');
+            const puedeTomar = tienePermiso('tomarPedidos');
+
             cont.innerHTML = activas.map(mesa => {
                 const totalItems = mesa.pedido.reduce((s, i) => s + (i.cantidad || 1), 0);
                 const total = calcularTotal(mesa.pedido);
@@ -2600,8 +2618,8 @@
                             <strong>${dinero(total)}</strong>
                         </div>
                         <div class="orden-activa-acciones">
-                            <button onclick="verOrdenMesa(${mesa.numero})">👁 Ver</button>
-                            <button class="primary" onclick="cobrarMesaDesdeOrdenes(${mesa.numero})">$ Cobrar</button>
+                            ${puedeTomar ? `<button onclick="verOrdenMesa(${mesa.numero})">👁 Ver</button>` : `<button onclick="verOrdenMesa(${mesa.numero})">👁 Ver</button>`}
+                            ${puedeCobrar ? `<button class="primary" onclick="cobrarMesaDesdeOrdenes(${mesa.numero})">$ Cobrar</button>` : `<button disabled style="opacity:.4;cursor:not-allowed;">$ Cobrar</button>`}
                         </div>
                     </article>
                 `;
@@ -2777,9 +2795,7 @@
             if (estado === "listo") ticket.listoEn = new Date().toISOString();
             if (estado === "entregado") ticket.entregadoEn = new Date().toISOString();
             guardarCocina();
-
             if (estado === "entregado") autolimpiarComandasEntregadas();
-
             renderizarCocina();
             const mensajes = {
                 preparando: "🔥 Comanda en preparación",
@@ -2790,7 +2806,6 @@
         }
 
         function renderizarCocina() {
-            // Auto-limpieza antes de renderizar
             autolimpiarComandasEntregadas();
 
             const grupos = {
@@ -2931,7 +2946,7 @@
                 }
                 autolimpiarComandasEntregadas();
             }
-        }, 300000); // Cada 5 minutos
+        }, 300000);
 
         /* COMANDA */
         function generarComanda() {
