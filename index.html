@@ -2208,12 +2208,15 @@
             cocinaPedidos = Object.entries(data).map(([id, ticket]) => ({ id, ...ticket }));
             const pendientesActuales = cocinaPedidos.filter(t => t.estado === 'pendiente').length;
 
-            if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes) {
-                const nuevas = pendientesActuales - ultimaCantidadPendientes;
-                reproducirSonidoDoble();
-                mostrarAlertaVisualCocina(`🔔 ¡${nuevas} nueva(s) comanda(s)!`);
-                mostrarToast(`🔔 Nueva comanda recibida (${pendientesActuales} pendientes)`, 'success');
-            }
+const rolActual = usuarioActual ? usuarioActual.rol : null;
+const esCocinaOAdmin = rolActual === 'cocina' || rolActual === 'admin';
+
+if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocinaOAdmin) {
+    const nuevas = pendientesActuales - ultimaCantidadPendientes;
+    reproducirSonidoDoble();
+    mostrarAlertaVisualCocina(`🔔 ¡${nuevas} nueva(s) comanda(s)!`);
+    mostrarToast(`🔔 Nueva comanda recibida (${pendientesActuales} pendientes)`, 'success');
+}
             ultimaCantidadPendientes = pendientesActuales;
             if (primerasCargas) setTimeout(() => { primerasCargas = false; }, 1500);
 
