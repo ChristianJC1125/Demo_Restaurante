@@ -1042,6 +1042,29 @@
             50% { opacity: .4; }
         }
 
+        /* 🔔 Indicador visual de notificación cocina */
+        .kitchen-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, var(--rose), var(--rose-light));
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 15px 40px rgba(216,142,135,.5);
+            z-index: 9500;
+            transition: transform .4s cubic-bezier(.4,0,.2,1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .kitchen-alert.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
         @media (max-width: 1400px) {
             .dashboard-grid { grid-template-columns: 260px minmax(0, 1fr); }
             .dashboard-grid.cajero-view { grid-template-columns: 1fr; }
@@ -1139,7 +1162,9 @@
             </form>
             <div style="margin-top:18px;padding:12px;border:1px dashed rgba(89,70,45,.2);border-radius:12px;background:rgba(255,255,255,.45);font-size:10px;color:#777;">
                 <strong style="color:#536d45;">Usuarios de demo</strong><br>
-                admin / admin123 · cajero / caja2024 · mesero / mesa2024 · cocina / cocina2024
+                admin / admin123 · cajero / caja2024<br>
+                mesero / mesa2024 · mesero2 / mesa2024b<br>
+                cocina / cocina2024
             </div>
         </div>
     </div>
@@ -1441,6 +1466,7 @@
                         </div>
                         <div style="display:flex; gap:8px; flex-wrap:wrap;">
                             <button class="action-btn" onclick="renderizarCocina()">↻ Actualizar</button>
+                            <button class="action-btn" id="btnToggleSonido" onclick="toggleSonidoCocina()">🔔 Sonido: ON</button>
                             <button class="action-btn success" onclick="limpiarComandasEntregadas()">🧹 Limpiar entregadas</button>
                             <button class="action-btn danger" style="grid-column:auto;" onclick="limpiarTodasLasComandas()">🗑️ Limpiar todo</button>
                         </div>
@@ -1598,10 +1624,21 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- 🔔 Alerta visual de nueva comanda -->
+    <div class="kitchen-alert" id="kitchenAlert">
+        🔔 ¡Nueva comanda recibida!
+    </div>
+
     <div class="connection-status" id="connectionStatus">
         <span class="dot"></span>
         <span id="connectionText">Conectando a Firebase...</span>
     </div>
+
+    <!-- 🔔 Sonido de notificación de cocina -->
+    <audio id="sonidoComanda" preload="auto">
+        <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+        <source src="https://actions.google.com/sounds/v1/alarms/beep_short.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- FIREBASE SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -1609,7 +1646,7 @@
 
     <script>
         /* =========================================================
-           CONFIGURACIÓN DE FIREBASE (LA TUYA)
+           CONFIGURACIÓN DE FIREBASE
         ========================================================= */
         const firebaseConfig = {
             apiKey: "AIzaSyBrK5lGFpOu8Aa8qxw87hjVw89pOTZagnA",
@@ -1622,13 +1659,11 @@
             measurementId: "G-SMJKPJZ2L2"
         };
 
-        // Verificar que Firebase SDK está disponible
         if (typeof firebase === 'undefined') {
             console.error('❌ Firebase SDK no cargó. Verifica tu conexión a internet.');
             alert('Error: No se pudo cargar Firebase. Verifica tu conexión a internet.');
         }
 
-        // Inicializar Firebase
         let db;
         try {
             if (!firebase.apps.length) {
@@ -1659,10 +1694,11 @@
         const nombresDias = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
 
         const USUARIOS = {
-            admin: { password: 'admin123', rol: 'admin', nombre: 'Administradora', icono: '👑' },
-            cajero: { password: 'caja2024', rol: 'cajero', nombre: 'Cajero', icono: '💰' },
-            mesero: { password: 'mesa2024', rol: 'mesero', nombre: 'Mesero', icono: '🍽️' },
-            cocina: { password: 'cocina2024', rol: 'cocina', nombre: 'Cocina', icono: '👩‍🍳' }
+            admin:   { password: 'admin123',   rol: 'admin',   nombre: 'Administradora', icono: '👑' },
+            cajero:  { password: 'caja2024',   rol: 'cajero',  nombre: 'Cajero',         icono: '💰' },
+            mesero:  { password: 'mesa2024',   rol: 'mesero',  nombre: 'Mesero 1',       icono: '🍽️' },
+            mesero2: { password: 'mesa2024b',  rol: 'mesero',  nombre: 'Mesero 2',       icono: '🍽️' },
+            cocina:  { password: 'cocina2024', rol: 'cocina',  nombre: 'Cocina',         icono: '👩‍🍳' }
         };
 
         const ROLES = {
@@ -1744,12 +1780,106 @@
         for (let i = 1; i <= 10; i++) mesas[i] = { pedido: [], estado: "disponible", horaApertura: null };
 
         /* =========================================================
+           SONIDO DE NOTIFICACIÓN PARA COCINA
+        ========================================================= */
+        let sonidoHabilitado = true;
+        let ultimaCantidadPendientes = 0;
+        let primerasCargas = true;
+        let audioDesbloqueado = false;
+
+        function reproducirSonidoComanda() {
+            if (!sonidoHabilitado) return;
+            const audio = document.getElementById('sonidoComanda');
+            if (!audio) return;
+            try {
+                audio.currentTime = 0;
+                audio.volume = 1;
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => {
+                        console.warn('⚠️ No se pudo reproducir el sonido:', err.message);
+                    });
+                }
+            } catch (err) {
+                console.warn('⚠️ Error al reproducir sonido:', err);
+            }
+        }
+
+        // Intentar sonar 2 veces para que sea más notorio
+        function reproducirSonidoDoble() {
+            reproducirSonidoComanda();
+            setTimeout(() => reproducirSonidoComanda(), 400);
+        }
+
+        function mostrarAlertaVisualCocina(mensaje) {
+            const alert = document.getElementById('kitchenAlert');
+            if (!alert) return;
+            alert.innerHTML = mensaje;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 4000);
+        }
+
+        function toggleSonidoCocina() {
+            sonidoHabilitado = !sonidoHabilitado;
+            const btn = document.getElementById('btnToggleSonido');
+            if (btn) btn.textContent = sonidoHabilitado ? '🔔 Sonido: ON' : '🔕 Sonido: OFF';
+            mostrarToast(sonidoHabilitado ? '🔔 Sonido activado' : '🔕 Sonido desactivado', 'success');
+        }
+
+        // Desbloquear audio tras primera interacción del usuario
+        function desbloquearAudio() {
+            if (audioDesbloqueado) return;
+            const audio = document.getElementById('sonidoComanda');
+            if (!audio) return;
+            audio.volume = 0;
+            const p = audio.play();
+            if (p !== undefined) {
+                p.then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audio.volume = 1;
+                    audioDesbloqueado = true;
+                    console.log('🔊 Audio desbloqueado correctamente');
+                }).catch(() => {
+                    audio.volume = 1;
+                });
+            }
+        }
+
+        // Registrar eventos para desbloquear audio
+        ['click','touchstart','keydown'].forEach(evt => {
+            document.addEventListener(evt, desbloquearAudio, { once: true, passive: true });
+        });
+
+        /* =========================================================
            SINCRONIZACIÓN CON FIREBASE
         ========================================================= */
         refComandas.on('value', (snapshot) => {
             const data = snapshot.val() || {};
             cocinaPedidos = Object.entries(data).map(([id, ticket]) => ({ id, ...ticket }));
             console.log('📋 Comandas actualizadas:', cocinaPedidos.length);
+
+            // 🔔 Detectar nuevas comandas PENDIENTES
+            const pendientesActuales = cocinaPedidos.filter(t => t.estado === 'pendiente').length;
+
+            if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes) {
+                const nuevas = pendientesActuales - ultimaCantidadPendientes;
+                reproducirSonidoDoble();
+                mostrarAlertaVisualCocina(`🔔 ¡${nuevas} nueva(s) comanda(s)!`);
+                mostrarToast(`🔔 Nueva comanda recibida (${pendientesActuales} pendientes)`, 'success');
+                console.log('🔔 NUEVA COMANDA DETECTADA');
+            }
+
+            ultimaCantidadPendientes = pendientesActuales;
+
+            // Activar flag después de la primera carga para no sonar al abrir
+            if (primerasCargas) {
+                setTimeout(() => {
+                    primerasCargas = false;
+                    console.log('✅ Detección de nuevas comandas activada');
+                }, 1500);
+            }
+
             renderizarCocina();
             const liveStatus = document.getElementById('cocinaLiveStatus');
             if (liveStatus) liveStatus.textContent = `Sincronizado · ${cocinaPedidos.length} comanda(s)`;
@@ -3188,12 +3318,12 @@
                 document.getElementById("loginScreen").classList.remove("hidden");
             }
 
-            // Diagnóstico automático
             setTimeout(() => {
                 console.log('🔍 DIAGNÓSTICO:');
                 console.log('   - Usuario:', usuarioActual ? usuarioActual.nombre : 'No logueado');
                 console.log('   - Firebase conectado:', document.getElementById('connectionText')?.textContent);
                 console.log('   - Comandas en memoria:', cocinaPedidos.length);
+                console.log('   - Sonido habilitado:', sonidoHabilitado);
             }, 2000);
         });
     </script>
