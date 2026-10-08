@@ -7,9 +7,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>EL SAZÓN DE LAS AMIGAS | Sistema de Restaurante</title>
-    <link rel="icon" type="image/png" href="Imagenes/Logo_Personal.png">
-<link rel="shortcut icon" type="image/png" href="Imagenes/Logo_Personal.png">
-<link rel="apple-touch-icon" href="Imagenes/Logo_Personal.png">
+
+    <link rel="icon" type="image/png" href="Imagenes/Emblema_Dorado_del_Sazón_de_Amigas-removebg-preview.png">
+    <link rel="shortcut icon" type="image/png" href="Imagenes/Emblema_Dorado_del_Sazón_de_Amigas-removebg-preview.png">
+    <link rel="apple-touch-icon" href="Imagenes/Emblema_Dorado_del_Sazón_de_Amigas-removebg-preview.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123,24 +124,50 @@
             from { opacity: 0; transform: translateY(40px) scale(.96); }
             to { opacity: 1; transform: none; }
         }
-        .login-brand { text-align: center; margin-bottom: clamp(20px, 4vw, 38px); }
+        .login-brand { text-align: center; margin-bottom: clamp(20px, 4vw, 30px); }
+
+        /* 🎨 LOGO DEL LOGIN */
         .brand-icon {
-            width: 68px; height: 68px; margin: auto; margin-bottom: 18px;
-            border-radius: 18px; display: flex; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            width: 110px;
+            height: 110px;
+            margin: auto;
+            margin-bottom: 10px;
+            border-radius: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
             color: #fffaf2;
-            font-family: "Playfair Display", serif; font-size: 30px; font-weight: 700;
-            box-shadow: 0 15px 40px rgba(182,122,69,.28);
+            font-family: "Playfair Display", serif;
+            font-size: 30px;
+            font-weight: 700;
+            box-shadow: none;
+            overflow: hidden;
+            padding: 0;
+            position: relative;
+        }
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            padding: 0;
+            box-sizing: border-box;
         }
         .login-brand h1 {
             font-family: "Playfair Display", serif;
-            font-size: clamp(22px, 5vw, 34px);
-            letter-spacing: 2px; color: #314635;
+            font-size: clamp(20px, 4.5vw, 28px);
+            letter-spacing: 2px;
+            color: #314635;
             line-height: 1.15;
         }
         .login-brand span {
-            display: block; margin-top: 7px; color: var(--gold);
-            font-size: clamp(9px, 2vw, 11px); letter-spacing: 3px; text-transform: uppercase;
+            display: block;
+            margin-top: 8px;
+            color: var(--gold);
+            font-size: clamp(9px, 2vw, 11px);
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
         .login-title { margin-bottom: 25px; }
         .login-title h2 { font-family: "Playfair Display", serif; font-size: clamp(20px, 4vw, 25px); margin-bottom: 7px; }
@@ -214,12 +241,32 @@
             display: flex; align-items: center; gap: 12px;
             padding: 5px 10px 30px;
         }
+
+        /* 🎨 LOGO DEL SIDEBAR */
         .sidebar-logo {
-            width: 42px; height: 42px; flex-shrink: 0;
-            display: flex; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: #fffaf2; border-radius: 11px;
-            font-family: "Playfair Display", serif; font-weight: 700; font-size: 19px;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+            color: #fffaf2;
+            border-radius: 11px;
+            font-family: "Playfair Display", serif;
+            font-weight: 700;
+            font-size: 19px;
+            overflow: hidden;
+            padding: 0;
+            position: relative;
+        }
+        .sidebar-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            padding: 0;
+            box-sizing: border-box;
         }
         .sidebar-brand h1 { font-family: "Playfair Display", serif; font-size: 15px; line-height: 1.15; }
         .sidebar-brand small {
@@ -1371,7 +1418,7 @@
             .kitchen-column { min-height: 200px; }
             .order-panel .menu-grid { max-height: 300px; }
             .login-card { padding: 26px 20px; }
-            .brand-icon { width: 56px; height: 56px; font-size: 26px; margin-bottom: 14px; }
+            .brand-icon { width: 90px; height: 90px; }
             .ordenes-activas-grid { grid-template-columns: 1fr; }
             .toast-container { right: 12px; left: 12px; max-width: none; }
             .toast { min-width: 0; max-width: 100%; }
@@ -1425,7 +1472,7 @@
             .orden-activa-acciones button { min-height: 44px; }
             .kitchen-alert { font-size: 12px; padding: 10px 16px; border-radius: 24px; }
             .connection-status { font-size: 9px; padding: 5px 8px; }
-            .brand-icon { width: 52px; height: 52px; font-size: 24px; }
+            .brand-icon { width: 80px; height: 80px; }
             .cobro-info-mesa { grid-template-columns: 1fr; gap: 6px; }
             .cobro-item { grid-template-columns: 34px 1fr auto; font-size: 11px; }
         }
@@ -1439,16 +1486,13 @@
             .menu-grid { grid-template-columns: 1fr; }
             .tables-grid { grid-template-columns: repeat(2, 1fr); }
             .login-card { padding: 22px 18px; }
-            .login-brand h1 { font-size: 18px; letter-spacing: 1px; }
-            .login-brand span { letter-spacing: 2px; }
             .toast { font-size: 11px; padding: 10px 12px; }
             .report-row { font-size: 10px; }
         }
         @media (max-height: 500px) and (orientation: landscape) {
             .login-card { padding: 20px; }
-            .brand-icon { width: 44px; height: 44px; font-size: 20px; margin-bottom: 8px; }
+            .brand-icon { width: 70px; height: 70px; margin-bottom: 8px; }
             .login-brand { margin-bottom: 15px; }
-            .login-brand h1 { font-size: 18px; }
             .login-title { margin-bottom: 15px; }
             .form-group { margin-bottom: 12px; }
         }
@@ -1483,9 +1527,8 @@
         <div class="login-card">
             <div class="login-brand">
                 <div class="brand-icon">
-    <img src="Imagenes/Emblema_Dorado_del_Sazón_de_Amigas-removebg-preview.png" alt="Logo El Sazón de las Amigas">
-</div>
-                <h1>EL SAZÓN DE LAS AMIGAS</h1>
+                    <img src="Imagenes/Emblema_Dorado_del_Sazón_de_Amigas-removebg-preview.png" alt="Logo El Sazón de las Amigas">
+                </div>
                 <span>Cocina casera hogareña · Sistema de restaurante</span>
             </div>
             <div class="login-title">
@@ -1527,7 +1570,9 @@
 
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-brand">
-                <div class="sidebar-logo">🌹</div>
+                <div class="sidebar-logo">
+                    <img src="Imagenes/Emblema_Dorado_del_Sazón_de_Amigas-removebg-preview.png" alt="Logo">
+                </div>
                 <div style="min-width:0;">
                     <h1>EL SAZÓN DE LAS AMIGAS</h1>
                     <small>COCINA CASERA HOGAREÑA</small>
@@ -1930,7 +1975,6 @@
                 <button class="close-modal" onclick="cerrarModalPago()" aria-label="Cerrar">×</button>
             </div>
             <div class="modal-body">
-                <!-- Info: mesa / mesera / hora -->
                 <div class="cobro-info-mesa">
                     <div>
                         <span>Mesa</span>
@@ -1946,7 +1990,6 @@
                     </div>
                 </div>
 
-                <!-- Lista de productos -->
                 <div class="cobro-lista">
                     <div class="cobro-lista-titulo">
                         <span>🛒 Productos ordenados</span>
@@ -1955,7 +1998,6 @@
                     <div id="cobroListaItems"></div>
                 </div>
 
-                <!-- Totales -->
                 <div class="cobro-totales">
                     <div class="linea">
                         <span>Subtotal</span>
@@ -1971,7 +2013,6 @@
                     </div>
                 </div>
 
-                <!-- Método de pago -->
                 <label class="modal-label">Método de pago</label>
                 <select class="modal-select" id="metodoPago" onchange="actualizarMetodoPago()">
                     <option value="efectivo">💵 Efectivo</option>
@@ -2209,7 +2250,6 @@
 
         function reproducirSonidoComanda() {
             if (!sonidoHabilitado) return;
-            // 🔔 SOLO COCINA O ADMIN
             const rolActual = usuarioActual ? usuarioActual.rol : null;
             if (rolActual !== 'cocina' && rolActual !== 'admin') return;
             const audio = document.getElementById('sonidoComanda');
@@ -2263,7 +2303,6 @@
             cocinaPedidos = Object.entries(data).map(([id, ticket]) => ({ id, ...ticket }));
             const pendientesActuales = cocinaPedidos.filter(t => t.estado === 'pendiente').length;
 
-            // 🔔 SOLO COCINA O ADMIN
             const rolActual = usuarioActual ? usuarioActual.rol : null;
             const esCocinaOAdmin = rolActual === 'cocina' || rolActual === 'admin';
 
@@ -2443,14 +2482,12 @@
             document.getElementById("welcomeText").textContent =
                 `Bienvenida, ${usuarioActual.nombre}`;
 
-            // 🔔 Reset al iniciar sesión
             primerasCargas = true;
             setTimeout(() => {
                 primerasCargas = false;
                 ultimaCantidadPendientes = cocinaPedidos.filter(t => t.estado === 'pendiente').length;
             }, 1500);
 
-            // 🔓 Desbloquear audio si es cocina
             if (usuarioActual.rol === 'cocina') {
                 setTimeout(desbloquearAudio, 500);
             }
@@ -2641,9 +2678,7 @@
             overlay.classList.toggle('active');
         }
 
-        /* =========================================================
-           FILTRO DE MESAS
-        ========================================================= */
+        /* FILTRO DE MESAS */
         function toggleFiltroMesas() {
             filtroMesasOcupadas = !filtroMesasOcupadas;
             const btn1 = document.getElementById('btnFiltroMesas');
@@ -2662,9 +2697,7 @@
             mostrarToast(filtroMesasOcupadas ? '👁 Mostrando solo mesas ocupadas' : '👁 Mostrando todas las mesas');
         }
 
-        /* =========================================================
-           DESOCUPAR MESA
-        ========================================================= */
+        /* DESOCUPAR MESA */
         function desocuparMesa(numero) {
             if (!tienePermiso('tomarPedidos') && !tienePermiso('reiniciarMesas')) {
                 mostrarToast('No tienes permiso para desocupar mesas', 'error');
