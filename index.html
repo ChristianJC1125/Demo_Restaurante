@@ -456,6 +456,48 @@
         .reset-tables:hover, .reset-tables:active { border-color: var(--red); color: var(--red); }
         .reset-tables.disabled { opacity: 0.3; pointer-events: none; cursor: not-allowed; }
 
+        /* BOTÓN DESOCUPAR */
+        .btn-desocupar {
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 10px;
+            min-height: 36px;
+            border: 1px solid rgba(182,93,93,.3);
+            color: var(--red);
+            background: #fff5f5;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: var(--transition);
+            text-align: center;
+        }
+        .btn-desocupar:hover, .btn-desocupar:active {
+            background: rgba(182,93,93,.12);
+            border-color: var(--red);
+        }
+
+        /* FILTRO MESAS */
+        .filtro-mesas-btn {
+            padding: 8px 12px;
+            font-size: 10px;
+            min-height: 34px;
+            border: 1px solid var(--border-gold);
+            background: #fffaf3;
+            color: var(--gold-dark);
+            border-radius: 8px;
+            font-weight: 700;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .filtro-mesas-btn:hover, .filtro-mesas-btn:active {
+            background: var(--gold);
+            color: #fffaf2;
+        }
+        .filtro-mesas-btn.activo {
+            background: var(--gold);
+            color: #fffaf2;
+            border-color: var(--gold);
+        }
+
         /* ORDER PANEL */
         .order-panel { min-width: 0; }
         .current-table {
@@ -1587,7 +1629,10 @@
                     <section class="panel tables-panel">
                         <div class="panel-header">
                             <h3>Mesas</h3>
-                            <span>Servicio</span>
+                            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                <button class="filtro-mesas-btn" id="btnFiltroMesas" onclick="toggleFiltroMesas()">👁 Todas</button>
+                                <span>Servicio</span>
+                            </div>
                         </div>
                         <div class="table-summary">
                             <div class="summary-item available">
@@ -1702,7 +1747,10 @@
             <!-- MESAS -->
             <div id="seccion-mesas" class="seccion">
                 <div class="panel" style="padding:18px;">
-                    <h2 style="font-family:'Playfair Display',serif; margin-bottom:15px; font-size:clamp(18px,4vw,24px);">Gestión de Mesas</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:15px;">
+                        <h2 style="font-family:'Playfair Display',serif; font-size:clamp(18px,4vw,24px);">Gestión de Mesas</h2>
+                        <button class="filtro-mesas-btn" id="btnFiltroMesas2" onclick="toggleFiltroMesas()">👁 Todas</button>
+                    </div>
                     <div class="table-summary" style="padding:0 0 15px 0;">
                         <div class="summary-item available">
                             <strong id="availableCount2">10</strong>
@@ -2060,9 +2108,7 @@
         const nombresMeses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
         const nombresDias = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
 
-        /* =========================================================
-           USUARIOS: MESERAS VIRIDIANA Y DIANA
-        ========================================================= */
+        /* USUARIOS */
         const USUARIOS = {
             admin:     { password: 'admin123',   rol: 'admin',   nombre: 'Administradora', icono: '👑' },
             cajero:    { password: 'caja2024',   rol: 'cajero',  nombre: 'Cajero',         icono: '💰' },
@@ -2136,6 +2182,7 @@
         let categoriaActiva = "todos";
         let usuarioActual = null;
         let cocinaPedidos = [];
+        let filtroMesasOcupadas = false;
 
         let estadisticas = {
             ventasPorMesa: {}, ventasPorDia: {}, ventasPorMes: {},
@@ -2157,6 +2204,9 @@
 
         function reproducirSonidoComanda() {
             if (!sonidoHabilitado) return;
+            // 🔔 SOLO COCINA O ADMIN
+            const rolActual = usuarioActual ? usuarioActual.rol : null;
+            if (rolActual !== 'cocina' && rolActual !== 'admin') return;
             const audio = document.getElementById('sonidoComanda');
             if (!audio) return;
             try {
@@ -2208,15 +2258,16 @@
             cocinaPedidos = Object.entries(data).map(([id, ticket]) => ({ id, ...ticket }));
             const pendientesActuales = cocinaPedidos.filter(t => t.estado === 'pendiente').length;
 
-const rolActual = usuarioActual ? usuarioActual.rol : null;
-const esCocinaOAdmin = rolActual === 'cocina' || rolActual === 'admin';
+            // 🔔 SOLO COCINA O ADMIN
+            const rolActual = usuarioActual ? usuarioActual.rol : null;
+            const esCocinaOAdmin = rolActual === 'cocina' || rolActual === 'admin';
 
-if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocinaOAdmin) {
-    const nuevas = pendientesActuales - ultimaCantidadPendientes;
-    reproducirSonidoDoble();
-    mostrarAlertaVisualCocina(`🔔 ¡${nuevas} nueva(s) comanda(s)!`);
-    mostrarToast(`🔔 Nueva comanda recibida (${pendientesActuales} pendientes)`, 'success');
-}
+            if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocinaOAdmin) {
+                const nuevas = pendientesActuales - ultimaCantidadPendientes;
+                reproducirSonidoDoble();
+                mostrarAlertaVisualCocina(`🔔 ¡${nuevas} nueva(s) comanda(s)!`);
+                mostrarToast(`🔔 Nueva comanda recibida (${pendientesActuales} pendientes)`, 'success');
+            }
             ultimaCantidadPendientes = pendientesActuales;
             if (primerasCargas) setTimeout(() => { primerasCargas = false; }, 1500);
 
@@ -2386,6 +2437,18 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
                 `<span class="badge-role ${rolInfo.badge}">${rolInfo.icono} ${rolInfo.nombre}</span>`;
             document.getElementById("welcomeText").textContent =
                 `Bienvenida, ${usuarioActual.nombre}`;
+
+            // 🔔 Reset al iniciar sesión
+            primerasCargas = true;
+            setTimeout(() => {
+                primerasCargas = false;
+                ultimaCantidadPendientes = cocinaPedidos.filter(t => t.estado === 'pendiente').length;
+            }, 1500);
+
+            // 🔓 Desbloquear audio si es cocina
+            if (usuarioActual.rol === 'cocina') {
+                setTimeout(desbloquearAudio, 500);
+            }
         }
 
         function checkSavedSession() {
@@ -2573,7 +2636,64 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
             overlay.classList.toggle('active');
         }
 
-        /* MESAS */
+        /* =========================================================
+           FILTRO DE MESAS
+        ========================================================= */
+        function toggleFiltroMesas() {
+            filtroMesasOcupadas = !filtroMesasOcupadas;
+            const btn1 = document.getElementById('btnFiltroMesas');
+            const btn2 = document.getElementById('btnFiltroMesas2');
+            const texto = filtroMesasOcupadas ? '👁 Solo ocupadas' : '👁 Todas';
+            if (btn1) {
+                btn1.textContent = texto;
+                btn1.classList.toggle('activo', filtroMesasOcupadas);
+            }
+            if (btn2) {
+                btn2.textContent = texto;
+                btn2.classList.toggle('activo', filtroMesasOcupadas);
+            }
+            renderizarMesas();
+            renderizarMesas2();
+            mostrarToast(filtroMesasOcupadas ? '👁 Mostrando solo mesas ocupadas' : '👁 Mostrando todas las mesas');
+        }
+
+        /* =========================================================
+           DESOCUPAR MESA
+        ========================================================= */
+        function desocuparMesa(numero) {
+            if (!tienePermiso('tomarPedidos') && !tienePermiso('reiniciarMesas')) {
+                mostrarToast('No tienes permiso para desocupar mesas', 'error');
+                return;
+            }
+            const mesa = mesas[numero];
+            if (!mesa || mesa.estado === "disponible") {
+                mostrarToast('Esta mesa ya está disponible', 'error');
+                return;
+            }
+
+            const cantidad = mesa.pedido.reduce((t, i) => t + (i.cantidad || 1), 0);
+            const mensaje = cantidad > 0
+                ? `⚠️ La mesa ${numero} tiene ${cantidad} producto(s) sin cobrar.\n¿Desocupar de todas formas?`
+                : `¿Desocupar la mesa ${numero}?`;
+
+            if (!confirm(mensaje)) return;
+
+            mesas[numero] = { pedido: [], estado: "disponible", horaApertura: null, mesera: null };
+            guardarMesas();
+
+            if (mesaActual === numero) {
+                mesaActual = null;
+                actualizarInterfazMesa();
+                mostrarPedido();
+            }
+
+            renderizarMesas();
+            renderizarMesas2();
+            renderizarOrdenesActivas();
+            mostrarToast(`🔓 Mesa ${numero} desocupada`, "success");
+        }
+
+        /* MESAS - RENDER */
         function renderizarMesas() {
             const container = document.getElementById("tablesGrid");
             if (!container) return;
@@ -2583,8 +2703,17 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
             for (let i = 1; i <= 10; i++) {
                 const mesa = mesas[i];
                 if (mesa.estado === "disponible") disponibles++; else ocupadas++;
+
+                if (filtroMesasOcupadas && mesa.estado !== "ocupada") continue;
+
                 const cantidad = mesa.pedido.reduce((total, item) => total + (item.cantidad || 1), 0);
                 const total = calcularSubtotal(mesa.pedido);
+                const puedeDesocupar = tienePermiso('tomarPedidos') || tienePermiso('reiniciarMesas');
+
+                const wrapper = document.createElement("div");
+                wrapper.style.display = "flex";
+                wrapper.style.flexDirection = "column";
+                wrapper.style.gap = "4px";
 
                 const button = document.createElement("button");
                 button.className = `table-card ${mesa.estado} ${mesaActual === i ? "selected" : ""}`;
@@ -2599,12 +2728,32 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
                     ${mesa.mesera ? `<div style="font-size:9px; color:var(--rose); margin-top:3px;">👤 ${mesa.mesera}</div>` : ""}
                     ${total > 0 ? `<div class="table-total">${dinero(total)}</div>` : ""}
                 `;
-                container.appendChild(button);
+                wrapper.appendChild(button);
+
+                if (mesa.estado === "ocupada" && puedeDesocupar) {
+                    const btnDesocupar = document.createElement("button");
+                    btnDesocupar.className = "btn-desocupar";
+                    btnDesocupar.textContent = "🔓 Desocupar";
+                    btnDesocupar.onclick = (e) => {
+                        e.stopPropagation();
+                        desocuparMesa(i);
+                    };
+                    wrapper.appendChild(btnDesocupar);
+                }
+
+                container.appendChild(wrapper);
             }
+
             const avail = document.getElementById("availableCount");
             const busy = document.getElementById("busyCount");
             if (avail) avail.textContent = disponibles;
             if (busy) busy.textContent = ocupadas;
+
+            if (filtroMesasOcupadas && container.children.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; padding:25px; text-align:center; color:var(--text-muted); border:1px dashed var(--border); border-radius:12px;">
+                    ✨ No hay mesas ocupadas en este momento.
+                </div>`;
+            }
         }
 
         function renderizarMesas2() {
@@ -2616,8 +2765,17 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
             for (let i = 1; i <= 10; i++) {
                 const mesa = mesas[i];
                 if (mesa.estado === "disponible") disponibles++; else ocupadas++;
+
+                if (filtroMesasOcupadas && mesa.estado !== "ocupada") continue;
+
                 const cantidad = mesa.pedido.reduce((total, item) => total + (item.cantidad || 1), 0);
                 const total = calcularSubtotal(mesa.pedido);
+                const puedeDesocupar = tienePermiso('tomarPedidos') || tienePermiso('reiniciarMesas');
+
+                const wrapper = document.createElement("div");
+                wrapper.style.display = "flex";
+                wrapper.style.flexDirection = "column";
+                wrapper.style.gap = "4px";
 
                 const button = document.createElement("button");
                 button.className = `table-card ${mesa.estado}`;
@@ -2632,12 +2790,32 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
                     ${mesa.mesera ? `<div style="font-size:9px; color:var(--rose); margin-top:3px;">👤 ${mesa.mesera}</div>` : ""}
                     ${total > 0 ? `<div class="table-total">${dinero(total)}</div>` : ""}
                 `;
-                container.appendChild(button);
+                wrapper.appendChild(button);
+
+                if (mesa.estado === "ocupada" && puedeDesocupar) {
+                    const btnDesocupar = document.createElement("button");
+                    btnDesocupar.className = "btn-desocupar";
+                    btnDesocupar.textContent = "🔓 Desocupar";
+                    btnDesocupar.onclick = (e) => {
+                        e.stopPropagation();
+                        desocuparMesa(i);
+                    };
+                    wrapper.appendChild(btnDesocupar);
+                }
+
+                container.appendChild(wrapper);
             }
+
             const avail2 = document.getElementById("availableCount2");
             const busy2 = document.getElementById("busyCount2");
             if (avail2) avail2.textContent = disponibles;
             if (busy2) busy2.textContent = ocupadas;
+
+            if (filtroMesasOcupadas && container.children.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; padding:25px; text-align:center; color:var(--text-muted); border:1px dashed var(--border); border-radius:12px;">
+                    ✨ No hay mesas ocupadas en este momento.
+                </div>`;
+            }
         }
 
         function abrirMesa(numero) {
@@ -2939,9 +3117,7 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
             mostrarToast("Orden cancelada", "success");
         }
 
-        /* =========================================================
-           MODAL DE PAGO MEJORADO: MESA + MESERA + PRODUCTOS
-        ========================================================= */
+        /* MODAL DE PAGO */
         function mostrarModalPago() {
             if (!tienePermiso('cobrar')) {
                 mostrarToast('No tienes permiso para cobrar', 'error');
@@ -2956,15 +3132,11 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
             const iva = subtotal * IVA_ACTUAL;
             const total = subtotal + iva;
 
-            // Mesa
             document.getElementById("modalMesaNumero").textContent = mesaActual;
             document.getElementById("cobroMesa").textContent = `Mesa ${mesaActual}`;
-            // Mesera
             document.getElementById("cobroMesera").textContent = mesa.mesera || "No asignada";
-            // Hora
             document.getElementById("cobroHora").textContent = mesa.horaApertura || "-";
 
-            // Lista de productos
             const totalItems = pedido.reduce((sum, item) => sum + (item.cantidad || 1), 0);
             document.getElementById("cobroItemsCount").textContent = `${totalItems} ${totalItems === 1 ? "artículo" : "artículos"}`;
             document.getElementById("cobroListaItems").innerHTML = pedido.map(item => `
@@ -2975,12 +3147,10 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
                 </div>
             `).join("");
 
-            // Totales
             document.getElementById("cobroSubtotal").textContent = dinero(subtotal);
             document.getElementById("cobroIva").textContent = dinero(iva);
             document.getElementById("modalTotal").textContent = dinero(total);
 
-            // Reset pago
             document.getElementById("pagoCon").value = "";
             document.getElementById("cambio").textContent = dinero(0);
             document.getElementById("metodoPago").value = "efectivo";
@@ -3022,7 +3192,6 @@ if (!primerasCargas && pendientesActuales > ultimaCantidadPendientes && esCocina
                 }
             }
 
-            // Registra la venta con la mesera asignada
             registrarVenta(mesaActual, total, pedido, metodo, mesa.mesera);
 
             mesas[mesaActual] = { pedido: [], estado: "disponible", horaApertura: null, mesera: null };
